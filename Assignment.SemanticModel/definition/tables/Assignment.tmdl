@@ -1,0 +1,88 @@
+table Assignment
+	lineageTag: ca65e64e-4dd2-429b-ac00-7c08fad6ce0c
+
+	measure APE = SUM(fact_sales[ape_usd])
+		lineageTag: 6fd4ce64-fd55-41b8-a1b8-352b9ffadb7c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'APE YTD' = ```
+			
+			    CALCULATE(
+			        SUM(fact_sales[ape_usd]),
+			        DATESYTD(dim_date[date])
+			    )
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 0c8b3423-49a8-41aa-9327-7bd300c96b9b
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Target APE' = SUM(fact_target[ape_target_usd])
+		lineageTag: 9e7d1707-1d48-43bd-8817-26b009eb51a4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'APE vs Target %' = ```
+			
+			    DIVIDE([APE YTD], SUM(fact_target[ape_target_usd]), 0)
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 6a0a569d-9196-4680-aae7-81105b53fb45
+
+	measure 'Active Agents' = ```
+			
+			    CALCULATE(
+			        DISTINCTCOUNT(dim_agent[agent_id]),
+			        dim_agent[active_flag] = 1
+			    )
+			```
+		formatString: 0
+		lineageTag: 3cd1a10b-44e4-45e9-8cc5-ff5448b98571
+
+	measure 'Persistency Rate' = ```
+			
+			    DIVIDE(
+			        COUNTROWS( FILTER( fact_persistency,fact_persistency[renewal_status] = "renewed" ) ),
+			        COUNTROWS( FILTER( fact_persistency,fact_persistency[renewal_status] IN { "renewed", "lapsed", "grace" } ) )
+			    )
+			```
+		lineageTag: b9bc764c-c8cb-42b8-9549-787cf0a7ee96
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Active Policies' =
+			
+			CALCULATE (
+			    DISTINCTCOUNT ( fact_persistency[policy_id] ),
+			    FILTER (
+			        fact_persistency,
+			        fact_persistency[renewal_status] IN { "active", "renewed", "grace" }
+			    )
+			)
+		formatString: 0
+		lineageTag: d8d15d04-a055-4704-ad7d-d98f05cc5279
+
+	measure 'Renewed Policies' =
+			
+			CALCULATE (
+			    DISTINCTCOUNT ( fact_persistency[policy_id] ),
+			    fact_persistency[renewal_status] = "renewed"
+			)
+		formatString: 0
+		lineageTag: a8c4d90a-4f63-4b61-9836-468e1a95fc88
+
+	partition Assignment = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,90 @@
+table fact_sales
+	lineageTag: b38a88cd-2ae1-48a8-aad1-4c018d5c54cd
+
+	column sale_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 81d633cd-4c98-43e5-9f7d-c662ce80a8c0
+		summarizeBy: sum
+		sourceColumn: sale_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 34d3d6f4-0830-4864-9098-5b30cc467ff7
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column agent_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 84269061-d4e6-482e-9afa-bfe98e861429
+		summarizeBy: none
+		sourceColumn: agent_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1dc81672-ccf9-4216-bc8f-df2961c065d6
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ape_usd
+		dataType: double
+		lineageTag: d1d8ef24-2ae4-4d04-8bb2-2eb370acc29a
+		summarizeBy: sum
+		sourceColumn: ape_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fyp_usd
+		dataType: double
+		lineageTag: f4f45ce4-0a99-49e4-8c21-3bb5516000e2
+		summarizeBy: sum
+		sourceColumn: fyp_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column policies_issued
+		dataType: int64
+		formatString: 0
+		lineageTag: 3052baf7-52cc-4a6b-bb48-a3fa01877098
+		summarizeBy: sum
+		sourceColumn: policies_issued
+
+		annotation SummarizationSetBy = Automatic
+
+	column sale_channel
+		dataType: string
+		lineageTag: 3c1c0d93-899e-421d-820c-e162d9ebaaa0
+		summarizeBy: none
+		sourceColumn: sale_channel
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_sales = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\DELL\OneDrive\Desktop\Assignment\data\fact_sales.csv"),[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"sale_id", Int64.Type}, {"date_key", Int64.Type}, {"agent_id", Int64.Type}, {"product_id", Int64.Type}, {"ape_usd", type number}, {"fyp_usd", type number}, {"policies_issued", Int64.Type}, {"sale_channel", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

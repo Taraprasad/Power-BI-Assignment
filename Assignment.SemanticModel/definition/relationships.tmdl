@@ -1,0 +1,47 @@
+relationship 79a5e02a-d25a-4f01-8d87-e5732105cded
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_agent.join_date
+	toColumn: LocalDateTable_a0d06e7d-f077-4a6e-ab3f-2dac07196640.Date
+
+relationship 265b326f-3a1e-4d8f-b83f-6615dabfff31
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_date.date
+	toColumn: LocalDateTable_d6b064f6-8b07-4468-9c1b-14723c99b9b4.Date
+
+relationship 298301c2-047d-fcf5-3124-327fd2a8337e
+	fromColumn: fact_sales.date_key
+	toColumn: dim_date.date_key
+
+relationship 51f0825e-a0c1-ca93-115e-044ecacadd45
+	fromColumn: fact_persistency.issue_date_key
+	toColumn: dim_date.date_key
+
+relationship 9a50cb8c-1271-6b73-a696-b53643300587
+	isActive: false
+	fromColumn: fact_persistency.renewal_due_date_key
+	toColumn: dim_date.date_key
+
+relationship 211a2169-7865-532e-0a72-5e10a48dc471
+	fromColumn: fact_target.date_key
+	toColumn: dim_date.date_key
+
+relationship cf0193e6-3a57-c23c-ddea-e13007803907
+	fromColumn: fact_sales.agent_id
+	toColumn: dim_agent.agent_id
+
+relationship f6342da1-35b5-18cb-0259-42f9268a9df0
+	fromColumn: fact_target.agent_id
+	toColumn: dim_agent.agent_id
+
+relationship f5f26070-4997-fc5b-c4d7-53115ce06ab3
+	fromColumn: fact_persistency.agent_id
+	toColumn: dim_agent.agent_id
+
+relationship da435670-dc4d-c1dc-ee76-d4c91161dd66
+	fromColumn: fact_sales.product_id
+	toColumn: dim_product.product_id
+
+relationship 1ff77c37-3ea9-87d2-5a09-fa02159b263f
+	fromColumn: fact_persistency.product_id
+	toColumn: dim_product.product_id
+

@@ -1,0 +1,31 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-IN
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["dim_agent","dim_date","dim_product","fact_persistency","fact_sales","fact_target","Assignment"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table dim_agent
+ref table DateTableTemplate_ccc85299-61d6-409c-8e0e-bfe9f85370ed
+ref table LocalDateTable_a0d06e7d-f077-4a6e-ab3f-2dac07196640
+ref table dim_date
+ref table LocalDateTable_d6b064f6-8b07-4468-9c1b-14723c99b9b4
+ref table dim_product
+ref table fact_persistency
+ref table fact_sales
+ref table fact_target
+ref table Assignment
+
+ref role 'Territory Manager - T-E1'
+ref role 'Territory Manager - T-N3'
+
+ref cultureInfo en-US
+

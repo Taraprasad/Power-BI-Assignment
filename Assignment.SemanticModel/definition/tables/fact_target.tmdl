@@ -1,0 +1,61 @@
+table fact_target
+	lineageTag: a19992cf-fe49-4642-a64c-7394de3ffafe
+
+	column agent_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 37f8afcb-110a-4b24-bee7-5d57c3420a44
+		summarizeBy: none
+		sourceColumn: agent_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: 598b2078-17a4-4d13-b33d-4493cd1775a0
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: 788d78e2-39ef-4b1b-9b6e-f9793ce96f9b
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column ape_target_usd
+		dataType: double
+		lineageTag: 664157f2-a312-486a-82da-6f503f1e09a4
+		summarizeBy: sum
+		sourceColumn: ape_target_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column date_key = fact_target[year] * 10000 + fact_target[month] * 100 + 1
+		formatString: 0
+		lineageTag: d50df456-314e-4ced-9711-9a4f118b2b2f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fact_target = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\DELL\OneDrive\Desktop\Assignment\data\fact_target.csv"),[Delimiter=",", Columns=4, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"agent_id", Int64.Type}, {"year", Int64.Type}, {"month", Int64.Type}, {"ape_target_usd", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

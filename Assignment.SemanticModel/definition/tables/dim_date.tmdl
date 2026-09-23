@@ -1,0 +1,119 @@
+table dim_date
+	lineageTag: 391258c9-7965-407e-bc25-b0b1a204acee
+
+	column date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 34020bb4-9ba5-4448-bedc-8d1b8e8aeb9f
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: cb02c8d8-fbf3-4e6b-b7d0-e4c70b58a0ca
+		summarizeBy: none
+		sourceColumn: date
+
+		variation Variation
+			isDefault
+			relationship: 265b326f-3a1e-4d8f-b83f-6615dabfff31
+			defaultHierarchy: LocalDateTable_d6b064f6-8b07-4468-9c1b-14723c99b9b4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column year
+		dataType: int64
+		formatString: 0
+		lineageTag: ef50396c-6545-448a-993e-4f977c547f3e
+		summarizeBy: sum
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e00c3d1-1544-4e74-baf5-8dd8a337c80e
+		summarizeBy: sum
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month
+		dataType: int64
+		formatString: 0
+		lineageTag: dbbf7956-2c2d-4012-a0d4-b3731dd42731
+		summarizeBy: sum
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		lineageTag: b699a933-f4cc-4472-bd84-0cb40270751e
+		summarizeBy: none
+		sourceColumn: month_name
+		sortByColumn: month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_year
+		dataType: int64
+		formatString: 0
+		lineageTag: ab8156c9-e2ee-4136-ac23-0ceb7d2055c5
+		summarizeBy: sum
+		sourceColumn: fiscal_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column fiscal_quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 5115b46d-6cce-47ec-9069-bc6689386458
+		summarizeBy: sum
+		sourceColumn: fiscal_quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekday
+		dataType: int64
+		formatString: 0
+		lineageTag: c033323e-510e-4dad-8d14-fe2718d03fea
+		summarizeBy: sum
+		sourceColumn: is_weekday
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Renewal Year' =
+			
+			CALCULATE (
+			    SELECTEDVALUE ( dim_date[year] ),
+			    USERELATIONSHIP ( fact_persistency[renewal_due_date_key], dim_date[date_key] )
+			)
+		formatString: 0
+		lineageTag: f94f5d61-39d7-4f5a-8d05-581251d3e718
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\DELL\OneDrive\Desktop\Assignment\data\dim_date.csv"),[Delimiter=",", Columns=9, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"date_key", Int64.Type}, {"date", type date}, {"year", Int64.Type}, {"quarter", Int64.Type}, {"month", Int64.Type}, {"month_name", type text}, {"fiscal_year", Int64.Type}, {"fiscal_quarter", Int64.Type}, {"is_weekday", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

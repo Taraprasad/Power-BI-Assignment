@@ -1,0 +1,80 @@
+table fact_persistency
+	lineageTag: 49eba5e7-f285-4f20-a5f3-e63bbd3e45f0
+
+	column policy_id
+		dataType: int64
+		formatString: 0
+		lineageTag: cff9d553-e224-453e-be47-5730c3fcccf5
+		summarizeBy: sum
+		sourceColumn: policy_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column agent_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 1113ce27-7268-4398-81d2-09ea59080fcd
+		summarizeBy: none
+		sourceColumn: agent_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: int64
+		formatString: 0
+		lineageTag: f87756c7-7817-4f3c-8218-cbfe2bc159fa
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column issue_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 041dec56-8f6b-4171-b774-912500af6c4a
+		summarizeBy: none
+		sourceColumn: issue_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column renewal_due_date_key
+		dataType: int64
+		formatString: 0
+		lineageTag: 3d5af210-098e-4de9-9e58-59b5f3807428
+		summarizeBy: sum
+		sourceColumn: renewal_due_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column renewal_status
+		dataType: string
+		lineageTag: 7e21be93-a912-4d8b-8471-d27f89f2307e
+		summarizeBy: none
+		sourceColumn: renewal_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column premium_usd
+		dataType: double
+		lineageTag: 586edd7f-fd31-46da-a1a2-9ec8f9045dcb
+		summarizeBy: sum
+		sourceColumn: premium_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_persistency = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\DELL\OneDrive\Desktop\Assignment\data\fact_persistency.csv"),[Delimiter=",", Columns=7, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"policy_id", Int64.Type}, {"agent_id", Int64.Type}, {"product_id", Int64.Type}, {"issue_date_key", Int64.Type}, {"renewal_due_date_key", Int64.Type}, {"renewal_status", type text}, {"premium_usd", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
