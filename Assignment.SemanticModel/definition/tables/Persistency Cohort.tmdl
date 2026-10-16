@@ -1,0 +1,84 @@
+table 'Persistency Cohort'
+	lineageTag: e0e1eb0c-2566-4f3e-b7f8-9ef11f8a4d61
+
+	column year
+		formatString: 0
+		lineageTag: 8688ab7e-1bff-48a3-95dc-fb866f679941
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: dim_date[year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Renewal Year'
+		formatString: 0
+		lineageTag: 5b8267c2-69b2-4c95-8be1-c29d98758f13
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: dim_date[Renewal Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ActivePolicies
+		formatString: 0
+		lineageTag: a53577ca-315e-489e-b42f-4f4d7f5cfda2
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [ActivePolicies]
+
+		annotation SummarizationSetBy = Automatic
+
+	column RenewedPolicies
+		formatString: 0
+		lineageTag: 4a1ae018-2b9a-4a00-ab6a-244bfaec0e1e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [RenewedPolicies]
+
+		annotation SummarizationSetBy = Automatic
+
+	column PersistencyRate
+		lineageTag: 452ee4ca-cc7a-41b1-ae9c-6ed219fd9a01
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [PersistencyRate]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Persistency Cohort' = calculated
+		mode: import
+		source =
+				
+				ADDCOLUMNS(
+				    SUMMARIZE(
+				        fact_persistency,
+				        dim_date[Year],
+				        dim_date[Renewal Year]
+				    ),
+				    "ActivePolicies",
+				        CALCULATE(
+				            DISTINCTCOUNT(fact_persistency[Policy_ID]),
+				            fact_persistency[Renewal_Status] IN { "active", "renewed", "grace" }
+				        ),
+				    "RenewedPolicies",
+				        CALCULATE(
+				            DISTINCTCOUNT(fact_persistency[Policy_ID]),
+				            fact_persistency[Renewal_Status] = "renewed"
+				        ),
+				    "PersistencyRate",
+				        DIVIDE(
+				            CALCULATE(
+				                DISTINCTCOUNT(fact_persistency[Policy_ID]),
+				                fact_persistency[Renewal_Status] = "renewed"
+				            ),
+				            CALCULATE(
+				                DISTINCTCOUNT(fact_persistency[Policy_ID]),
+				                fact_persistency[Renewal_Status] IN { "active", "renewed", "grace" }
+				            )
+				        )
+				)
+
+	annotation PBI_Id = 0fe65fe30d524bcdae9cce5c13d37e34
+

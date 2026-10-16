@@ -58,7 +58,7 @@ table dim_date
 		lineageTag: b699a933-f4cc-4472-bd84-0cb40270751e
 		summarizeBy: none
 		sourceColumn: month_name
-		sortByColumn: month
+		sortByColumn: Month-Year
 
 		changedProperty = SortByColumn
 
@@ -100,6 +100,12 @@ table dim_date
 		formatString: 0
 		lineageTag: f94f5d61-39d7-4f5a-8d05-581251d3e718
 		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month-Year = FORMAT(dim_date[date],"mmm-yyyy")
+		lineageTag: 588d167b-c664-4950-a2fb-3784f11436b3
+		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 

@@ -1,7 +1,0 @@
-role 'Territory Manager - T-E1'
-	modelPermission: read
-
-	tablePermission dim_agent = [territory] == "T-E1"
-
-	annotation PBI_Id = 4fe724cd232246d7a119021d80ea1250
-

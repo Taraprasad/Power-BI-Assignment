@@ -45,3 +45,8 @@ relationship 1ff77c37-3ea9-87d2-5a09-fa02159b263f
 	fromColumn: fact_persistency.product_id
 	toColumn: dim_product.product_id
 
+relationship f246e332-f63d-4d9b-919c-dc3e8c8b9b69
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Last Refreshed On'.'Date Last Refreshed'
+	toColumn: LocalDateTable_4bff631b-3558-4a7c-8982-1afc779694dd.Date
+

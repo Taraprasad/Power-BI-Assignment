@@ -25,9 +25,12 @@ table Assignment
 
 	measure 'APE vs Target %' = ```
 			
-			    DIVIDE([APE YTD], SUM(fact_target[ape_target_usd]), 0)
+			    DIVIDE(
+			    [APE Actual],
+			    [APE Target],
+			    0)
 			```
-		formatString: 0.0%;-0.0%;0.0%
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: 6a0a569d-9196-4680-aae7-81105b53fb45
 
 	measure 'Active Agents' = ```
@@ -47,9 +50,8 @@ table Assignment
 			        COUNTROWS( FILTER( fact_persistency,fact_persistency[renewal_status] IN { "renewed", "lapsed", "grace" } ) )
 			    )
 			```
+		formatString: 0.00%;-0.00%;0.00%
 		lineageTag: b9bc764c-c8cb-42b8-9549-787cf0a7ee96
-
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	measure 'Active Policies' =
 			
@@ -65,12 +67,203 @@ table Assignment
 
 	measure 'Renewed Policies' =
 			
-			CALCULATE (
-			    DISTINCTCOUNT ( fact_persistency[policy_id] ),
-			    fact_persistency[renewal_status] = "renewed"
+			CALCULATE(
+			    DISTINCTCOUNT(fact_persistency[Policy_ID]),
+			    fact_persistency[Renewal_Status] = "renewed"
 			)
 		formatString: 0
 		lineageTag: a8c4d90a-4f63-4b61-9836-468e1a95fc88
+
+	measure 'APE Target' = SUM(fact_target[ape_target_usd])
+		lineageTag: 87702e77-4b50-448a-8425-a4a4de0ab344
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'APE Actual' = SUM(fact_sales[ape_usd])
+		lineageTag: 97866504-e824-4240-a6d6-63ef6d3cb89c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Last Refreshed On' = FIRSTDATE('Last Refreshed On'[Date Last Refreshed])
+		lineageTag: a797c9a4-0d75-4b98-a077-bfa8d29772df
+
+	measure 'APE Achievement %' = DIVIDE([APE Actual], [APE Target], 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 0017d310-35b2-401c-b9e8-8d8a03fdb2d0
+
+	measure Status = "Performance"
+		lineageTag: 22f8215d-5160-491e-b36a-235a93cb987a
+
+	measure AvgAchievementPerAgent = ```
+			
+			AVERAGEX (
+			    VALUES ( 'dim_date'[month]),
+			    [APE Achievement %]
+			)
+			
+			```
+		lineageTag: 636375cd-f5aa-49ab-ba3c-40571def093c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Top_Product =
+			
+			VAR _tbl =
+			    ADDCOLUMNS(
+			        SUMMARIZE(fact_sales, dim_product[product_name]),
+			        "APE", SUM(fact_sales[ape_usd])
+			    )
+			RETURN
+			    MAXX(
+			        TOPN(1, _tbl, [APE], DESC),
+			        dim_product[product_name]
+			    )
+		lineageTag: 217d4503-70a0-466b-91b8-e5e5dff4b17d
+
+	measure MoM_growth =
+			
+			VAR CurrentMonth = CALCULATE(SUM(fact_sales[ape_usd]), dim_date[month] = MAX(dim_date[month]))
+			VAR PrevMonth = CALCULATE(SUM(fact_sales[ape_usd]), dim_date[month] = MAX(dim_date[month]) - 1)
+			RETURN DIVIDE(CurrentMonth - PrevMonth, PrevMonth)
+		lineageTag: 4e53fb72-fa58-4f7d-9bc6-0d51046900e5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Rank =
+			
+			RANKX(
+			    ALL(dim_agent),
+			    [APE YTD],
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		lineageTag: 369bfabd-bad5-4aff-90bd-3d29e04723c4
+
+	measure MoM_Sparkline = ```
+			
+			VAR Points =
+			    TOPN (
+			        6,
+			        SUMMARIZE ( fact_sales, dim_date[Month-Year], "APE", SUM ( fact_sales[ape_usd]) ),
+			        dim_date[Month-Year], ASC
+			    )
+			VAR MinVal = MINX ( Points, [APE] )
+			VAR MaxVal = MAXX ( Points, [APE] )
+			VAR Scale = MaxVal - MinVal
+			VAR SVGPoints =
+			    CONCATENATEX (
+			        Points,
+			        ( RANKX ( Points, dim_date[Month-Year], , ASC ) * 50 ) & "," &
+			        ( 100 - DIVIDE ( [APE] - MinVal, Scale, 0 ) * 100 ),
+			        " ",
+			        dim_date[Month-Year],
+			        ASC
+			    )
+			RETURN
+			"<svg width='300' height='100'>
+			   <polyline points='" & SVGPoints & "'
+			     style='fill:none;stroke:#2b5797;stroke-width:3' />
+			</svg>"
+			
+			```
+		lineageTag: 737634df-c1fe-4cbd-9988-e56a6e99580a
+
+	measure Persistency_Color = ```
+			
+			SWITCH(
+			    TRUE(),
+			    [Persistency Rate] >= 0.9, "green",
+			    [Persistency Rate] >= 0.8, "orange", "red"
+			)
+			
+			```
+		lineageTag: 101db55a-17cd-4125-b2cf-08426fcc3132
+
+	measure MoM_Growth_Arrow =
+			
+			IF([MoM_growth] > 0, "▲", "▼")
+		lineageTag: 0f3b324b-8843-41bd-8f26-58e9da4d9839
+
+	measure MoM_Growth_Color = ```
+			
+			IF([MoM_growth] > 0, "green", "red")
+			
+			```
+		lineageTag: 78286a6a-1939-4ac6-816d-3c5bc17465cb
+
+	measure AgentProfileCardHTML = ```
+			
+			"<div style='font-family:Segoe UI; border:3px solid #ccc; border-radius:16px; padding:32px; width:600px; background-color:#ffffff; box-shadow:0 6px 12px rgba(0,0,0,0.2); margin:auto;'>
+			  <div style='display:flex; justify-content:space-between; align-items:center;'>
+			    <div>
+			      <h1 style='margin:0; color:#2b5797; font-size:34px;'>" & SELECTEDVALUE(dim_agent[agent_name]) & "</h1>
+			      <p style='margin:0; font-size:26px; color:#444;'>Territory: " & SELECTEDVALUE(dim_agent[territory]) & "</p>
+			    </div>
+			    <div style='font-size:24px; font-weight:bold; color:#fff; background-color:#2b5797; padding:10px 20px; border-radius:10px; text-align:center;'>
+			      Rank " & FORMAT([Rank], "0") & "
+			    </div>
+			  </div>
+			  <p style='margin:20px 0; font-size:30px; font-weight:bold;'>YTD APE: " & FORMAT([APE YTD], "#,##0") & "</p>
+			  <p style='margin:16px 0; font-size:26px; color:" & [Persistency_Color] & ";'>
+			     Persistency Rate: " & FORMAT([Persistency Rate], "0%") & "</p>
+			  <p style='margin:16px 0; font-size:26px; color:" & [MoM_Growth_Color] & ";'>
+			     MoM Growth: " & FORMAT([MoM_growth], "0.0%") & " " & [MoM_Growth_Arrow] & "</p>
+			  <div style='margin:20px 0;'>" & [MoM_Sparkline] & "</div>
+			  <p style='margin:16px 0; font-size:26px; color:#444;'>Top Product: <b>" & [Top_Product] & "</b></p>
+			</div>"
+			
+			```
+		lineageTag: 282ffbf9-c71a-4db1-ae78-8c9c76f6bc75
+
+	measure 'Active Policy Count' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT(fact_persistency[Policy_ID]),
+			    fact_persistency[Renewal_Status] IN { "active", "renewed", "grace" },
+			    KEEPFILTERS(
+			        TREATAS(
+			            { MAX(dim_date[date]) },
+			            dim_date[date]
+			        )
+			    )
+			)
+		formatString: 0
+		lineageTag: 12450c37-2e35-408e-b420-7b68891814ee
+
+	measure 'Persistency Rate1' = ```
+			
+			DIVIDE([Renewed Policies], [Active Policy Count])
+			
+			```
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: c08a8230-aa82-426f-baba-e9a3dc6ea1a3
+
+	measure 'Persistency Display' = ```
+			
+			FORMAT([Persistency Rate], "0.00%") &
+			" (" & FORMAT([Renewed Policies], "#,##0") &
+			"" & FORMAT([Active Policy Count], "#,##0") & ")"
+			
+			```
+		lineageTag: 14a6f3d5-a3f6-4cc2-9f91-361ca4302288
+
+	column AgentRank = ```
+			
+			RANKX (
+			    ALL ( 'dim_agent'[agent_name] ),
+			    [AvgAchievementPerAgent],
+			    ,
+			    DESC
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 7c92f7b8-e375-4d1b-ab99-6c4ed8121f88
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
 
 	partition Assignment = m
 		mode: import

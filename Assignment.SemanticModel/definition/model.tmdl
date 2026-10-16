@@ -9,7 +9,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["dim_agent","dim_date","dim_product","fact_persistency","fact_sales","fact_target","Assignment"]
+annotation PBI_QueryOrder = ["dim_agent","dim_date","dim_product","fact_persistency","fact_sales","fact_target","Assignment","Last Refreshed On"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -23,9 +23,12 @@ ref table fact_persistency
 ref table fact_sales
 ref table fact_target
 ref table Assignment
+ref table 'Last Refreshed On'
+ref table LocalDateTable_4bff631b-3558-4a7c-8982-1afc779694dd
+ref table 'Persistency Cohort'
 
-ref role 'Territory Manager - T-E1'
-ref role 'Territory Manager - T-N3'
+ref role 'Territory Manager - TN3'
+ref role 'Territory Manager - T1'
 
 ref cultureInfo en-US
 

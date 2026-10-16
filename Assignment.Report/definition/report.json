@@ -39,6 +39,14 @@
       }
     ]
   },
+  "publicCustomVisuals": [
+    "deneb7E15AEF80B9E4D4F8E12924291ECE89A",
+    "zebraBiCards2C860CFAA9944091B75F0DBD117F20FA",
+    "htmlContent443BE3AD55E043BF878BED274D3A6865",
+    "textStylerD577C9FF21FB4883A1CE1335C340B54F",
+    "htmlContentViewer_B1C2D3E4F5A6B7C8D9E0F1A2B3C4D5E6",
+    "htmlContent443BE3AD55E043BF878BED274D3A6855"
+  ],
   "resourcePackages": [
     {
       "name": "SharedResources",

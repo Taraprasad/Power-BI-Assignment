@@ -1,0 +1,380 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "name": "102f238e498a0fc5d7af",
+  "position": {
+    "x": 18.199052132701421,
+    "y": 222.93838862559241,
+    "z": 4000,
+    "height": 857.63033175355451,
+    "width": 1901.8009478672986,
+    "tabOrder": 4000
+  },
+  "visual": {
+    "visualType": "deneb7E15AEF80B9E4D4F8E12924291ECE89A",
+    "query": {
+      "queryState": {
+        "dataset": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_agent"
+                    }
+                  },
+                  "Property": "agent_name"
+                }
+              },
+              "queryRef": "dim_agent.agent_name",
+              "nativeQueryRef": "agent_name"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Assignment"
+                    }
+                  },
+                  "Property": "APE Actual"
+                }
+              },
+              "queryRef": "Assignment.APE Actual",
+              "nativeQueryRef": "APE Actual"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Assignment"
+                    }
+                  },
+                  "Property": "APE Target"
+                }
+              },
+              "queryRef": "Assignment.APE Target",
+              "nativeQueryRef": "APE Target"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Assignment"
+                    }
+                  },
+                  "Property": "APE Achievement %"
+                }
+              },
+              "queryRef": "Assignment.APE Achievement %",
+              "nativeQueryRef": "APE Achievement %"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "Month-Year"
+                }
+              },
+              "queryRef": "dim_date.Month-Year",
+              "nativeQueryRef": "Month-Year"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_agent"
+                  }
+                },
+                "Property": "agent_name"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "objects": {
+      "vega": [
+        {
+          "properties": {
+            "provider": {
+              "expr": {
+                "Literal": {
+                  "Value": "'vegaLite'"
+                }
+              }
+            },
+            "jsonSpec": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{\n  \"data\": { \"name\": \"dataset\" },\n  \"vconcat\": [\n    {\n      \"height\": 60,\n      \"mark\": { \"type\": \"bar\", \"color\": \"lightgrey\", \"tooltip\": true },\n      \"encoding\": {\n        \"x\": { \"field\": \"agent_name\", \"axis\": null },\n        \"y\": { \"aggregate\": \"mean\", \"field\": \"Month-Year\", \"axis\": null }\n      }\n    },\n    {\n      \"hconcat\": [\n        {\n          \"layer\": [\n            {\n              \"mark\": { \"type\": \"rect\", \"tooltip\": true },\n              \"encoding\": {\n                \"x\": { \"field\": \"agent_name\", \"type\": \"ordinal\", \"axis\": { \"labelAngle\": -90 } },\n                \"y\": {\n                  \"field\": \"Month-Year\",\n                  \"type\": \"ordinal\",\n                  \"sort\": { \"op\": \"mean\", \"field\": \"APE Achievement %\", \"order\": \"descending\" }\n                },\n                \"color\": {\n                  \"field\": \"APE Achievement %\",\n                  \"type\": \"quantitative\",\n                  \"scale\": { \"domain\": [0.5, 1, 3], \"range\":  [\"#f0f0f0\", \"#a6cee3\", \"#b2df8a\"]}\n                },\n                \"tooltip\": [\n                  { \"field\": \"agent_name\" },\n                  { \"field\": \"Month-Year\" },\n                  { \"field\": \"APE Actual\" },\n                  { \"field\": \"APE Target\" },\n                  { \"field\": \"APE Achievement %\" }\n                ]\n              }\n            },\n            {\n              \"mark\": { \"type\": \"text\", \"fontSize\": 9, \"color\": \"black\" },\n              \"encoding\": {\n                \"x\": { \"field\": \"agent_name\", \"type\": \"ordinal\" },\n                \"y\": { \"field\": \"Month-Year\", \"type\": \"ordinal\" },\n                \"text\": {\n                  \"condition\": [\n                    { \"test\": \"datum[''APE Achievement %''] < 0.9\", \"field\": \"APE Achievement %\", \"format\": \".0%\" },\n                    { \"test\": \"datum[''APE Achievement %''] > 2\", \"field\": \"APE Achievement %\", \"format\": \".0%\" }\n                  ]\n                }\n              }\n            }\n          ]\n        },\n        {\n          \"mark\": { \"type\": \"bar\", \"color\": \"lightgrey\", \"tooltip\": true },\n          \"width\": 60,\n          \"encoding\": {\n            \"y\": { \"field\": \"Month-Year\", \"axis\": null },\n            \"x\": { \"aggregate\": \"mean\", \"field\": \"APE Achievement %\", \"type\": \"quantitative\", \"axis\": null }\n          }\n        }\n      ]\n    }\n  ]\n}'"
+                }
+              }
+            },
+            "jsonConfig": {
+              "expr": {
+                "Literal": {
+                  "Value": "'{}'"
+                }
+              }
+            },
+            "enableTooltips": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "enableContextMenu": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "enableContextMenuSelector": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "enableHighlight": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "enableSelection": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "selectionMaxDataPoints": {
+              "expr": {
+                "Literal": {
+                  "Value": "50D"
+                }
+              }
+            },
+            "selectionMode": {
+              "expr": {
+                "Literal": {
+                  "Value": "'simple'"
+                }
+              }
+            },
+            "version": {
+              "expr": {
+                "Literal": {
+                  "Value": "'6.4.3'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stateManagement": [
+        {
+          "properties": {
+            "denebMetaVersion": {
+              "expr": {
+                "Literal": {
+                  "Value": "'2'"
+                }
+              }
+            },
+            "viewportHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "826D"
+                }
+              }
+            },
+            "viewportWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "1868D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "developer": [
+        {
+          "properties": {
+            "version": {
+              "expr": {
+                "Literal": {
+                  "Value": "'2.0.0.0'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "273ead273663fe6e757a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Assignment"
+              }
+            },
+            "Property": "APE Target"
+          }
+        },
+        "type": "Advanced",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "a",
+              "Entity": "Assignment",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "Comparison": {
+                      "ComparisonKind": 0,
+                      "Left": {
+                        "Measure": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "a"
+                            }
+                          },
+                          "Property": "APE Target"
+                        }
+                      },
+                      "Right": {
+                        "Literal": {
+                          "Value": "null"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "290ad916377c8a030289",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_agent"
+              }
+            },
+            "Property": "agent_name"
+          }
+        },
+        "type": "TopN",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_agent",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "d"
+                              }
+                            },
+                            "Property": "agent_name"
+                          }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "null"
+                            }
+                          }
+                        ]
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "439341700acdb69249fc",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "Assignment"
+              }
+            },
+            "Property": "AvgAchievementPerAgent"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+role 'Territory Manager - TN3'
+	modelPermission: read
+
+	tablePermission dim_agent = [territory] == "T-N3"
+
+	annotation PBI_Id = 68cfbb1d53904942a63b5211b8a9372e
+
