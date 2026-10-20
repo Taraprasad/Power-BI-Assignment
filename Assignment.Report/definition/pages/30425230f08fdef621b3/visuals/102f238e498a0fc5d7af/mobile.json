@@ -6,5 +6,29 @@
     "z": 10,
     "height": 907,
     "width": 324
+  },
+  "objects": {
+    "vega": [],
+    "stateManagement": [
+      {
+        "properties": {
+          "viewportHeight": {
+            "expr": {
+              "Literal": {
+                "Value": "875D"
+              }
+            }
+          },
+          "viewportWidth": {
+            "expr": {
+              "Literal": {
+                "Value": "290D"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "developer": []
   }
 }

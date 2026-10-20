@@ -50,3 +50,8 @@ relationship f246e332-f63d-4d9b-919c-dc3e8c8b9b69
 	fromColumn: 'Last Refreshed On'.'Date Last Refreshed'
 	toColumn: LocalDateTable_4bff631b-3558-4a7c-8982-1afc779694dd.Date
 
+relationship 50054039-4ac0-4af6-b141-567ccfaf2369
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dim_date.Month-Year1
+	toColumn: LocalDateTable_5c9612e6-167a-41dd-b5c8-a5652d80d9c8.Date
+

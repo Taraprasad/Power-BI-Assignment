@@ -106,8 +106,28 @@ table dim_date
 	column Month-Year = FORMAT(dim_date[date],"mmm-yyyy")
 		lineageTag: 588d167b-c664-4950-a2fb-3784f11436b3
 		summarizeBy: none
+		sortByColumn: Month-Year1
+
+		changedProperty = SortByColumn
 
 		annotation SummarizationSetBy = Automatic
+
+	column Month-Year1 = FORMAT(dim_date[date],"mmm-yyyy")
+		dataType: dateTime
+		formatString: mmmm\, yyyy
+		lineageTag: 9971a1a7-ff8f-4cf7-9c15-6f1bf113ab98
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 50054039-4ac0-4af6-b141-567ccfaf2369
+			defaultHierarchy: LocalDateTable_5c9612e6-167a-41dd-b5c8-a5652d80d9c8.'Date Hierarchy'
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
 
 	partition dim_date = m
 		mode: import

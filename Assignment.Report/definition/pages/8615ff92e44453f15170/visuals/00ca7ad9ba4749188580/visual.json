@@ -1,10 +1,10 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "00ca7ad9ba4749188580",
   "position": {
     "x": 0,
     "y": 0,
-    "z": 2000,
+    "z": 1000,
     "height": 76.608478802992522,
     "width": 1920,
     "tabOrder": 1000
@@ -19,7 +19,7 @@
               {
                 "textRuns": [
                   {
-                    "value": "Persistency Cohort - Dashboard",
+                    "value": "Cohort Analysis- Dashboard",
                     "textStyle": {
                       "fontWeight": "bold",
                       "fontSize": "36pt",

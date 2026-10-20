@@ -26,6 +26,7 @@ ref table Assignment
 ref table 'Last Refreshed On'
 ref table LocalDateTable_4bff631b-3558-4a7c-8982-1afc779694dd
 ref table 'Persistency Cohort'
+ref table LocalDateTable_5c9612e6-167a-41dd-b5c8-a5652d80d9c8
 
 ref role 'Territory Manager - TN3'
 ref role 'Territory Manager - T1'
